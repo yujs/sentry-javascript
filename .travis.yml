@@ -1,11 +1,11 @@
 git:
   depth: false # we need this to make proper releases
 
-branches:
-  only:
-    - master
-    - /^release\/.+$/
-    - /^major\/.+$/
+# branches:
+#   only:
+#     - master
+#     - /^release\/.+$/
+#     - /^major\/.+$/
 
 install: yarn --ignore-engines
 os: linux
