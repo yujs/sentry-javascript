@@ -86,7 +86,7 @@ module.exports = config => {
         ui: "bdd",
       },
     },
-    concurrency: isLocalRun ? 1 : 2,
+    concurrency: isLocalRun ? 1 : 4,
     retryLimit: 5,
     browserDisconnectTolerance: 5,
     // 2 minutes should be more than enough...
