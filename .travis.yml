@@ -7,7 +7,7 @@ git:
 #     - /^release\/.+$/
 #     - /^major\/.+$/
 
-# new dummy comment to give me something to commit
+# newer dummy comment to give me something to commit
 
 install: yarn --ignore-engines
 os: linux
