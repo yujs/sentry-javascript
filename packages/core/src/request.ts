@@ -53,19 +53,21 @@ export function eventToSentryRequest(event: Event, api: API): SentryRequest {
       // length: new TextEncoder().encode(req.body).length,
     });
 
-    const measureHeader = JSON.stringify({
-      type: 'measurements',
-    });
+    // const measureHeader = JSON.stringify({
+    //   type: 'measurements',
+    // });
 
-    const measurePayload = JSON.stringify({ foo: { value: 420.69 }, BAR: { value: 2020 } });
+    // const measurePayload = JSON.stringify({ foo: { value: 420.69 }, BAR: { value: 2020 } });
 
-    const measureItem = `${measureHeader}\n${measurePayload}`;
+    // const measureItem = `${measureHeader}\n${measurePayload}`;
 
     // The trailing newline is optional. We intentionally don't send it to avoid
     // sending unnecessary bytes.
     //
     // const envelope = `${envelopeHeaders}\n${itemHeaders}\n${req.body}\n`;
-    const envelope = `${envelopeHeaders}\n${itemHeaders}\n${req.body}\n${measureItem}`;
+    const envelope = `${envelopeHeaders}\n${itemHeaders}\n${req.body}`;
+    console.log('hello3');
+    // const envelope = `${envelopeHeaders}\n${itemHeaders}\n${req.body}\n${measureItem}`;
     req.body = envelope;
   }
 
