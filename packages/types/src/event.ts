@@ -8,6 +8,10 @@ import { Span } from './span';
 import { Stacktrace } from './stacktrace';
 import { User } from './user';
 
+export type Measurements = {
+  [name: string]: { value: number };
+};
+
 /** JSDoc */
 export interface Event {
   event_id?: string;
@@ -39,6 +43,7 @@ export interface Event {
   user?: User;
   type?: EventType;
   spans?: Span[];
+  measurements?: Measurements;
 }
 
 /** JSDoc */

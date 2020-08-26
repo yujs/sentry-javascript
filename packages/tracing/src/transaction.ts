@@ -98,6 +98,9 @@ export class Transaction extends SpanClass {
       timestamp: this.endTimestamp,
       transaction: this.name,
       type: 'transaction',
+      measurements: {
+        fid: { value: 9876.54321 },
+      },
     });
   }
 }
