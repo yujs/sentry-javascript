@@ -30,9 +30,11 @@
     "pack": "npm pack"
   },
   "dependencies": {
+    "@embroider/macros": "^0.22.0",
     "@sentry/browser": "5.22.3",
     "@sentry/types": "5.22.3",
     "@sentry/utils": "5.22.3",
+    "@types/babel__core": "^7.1.9",
     "ember-auto-import": "^1.6.0",
     "ember-cli-babel": "^7.20.5",
     "ember-cli-htmlbars": "^5.1.2",
