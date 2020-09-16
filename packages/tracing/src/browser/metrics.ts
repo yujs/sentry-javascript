@@ -96,16 +96,16 @@ export class MetricsInstrumentation {
 
             // capture web vitals
 
-            if (entry.name === "first-paint") {
+            if (entry.name === 'first-paint') {
               logger.log('[Measurements] Adding FP (First Paint)');
-              this._measurements["fp"] = { value: entry.startTime };
-              this._measurements["mark.fp"] = {value: startTimestamp};
+              this._measurements['fp'] = { value: entry.startTime };
+              this._measurements['mark.fp'] = { value: startTimestamp };
             }
 
-            if (entry.name === "first-contentful-paint") {
+            if (entry.name === 'first-contentful-paint') {
               logger.log('[Measurements] Adding FCP (First Contentful Paint)');
-              this._measurements["fcp"] = { value: entry.startTime };
-              this._measurements["mark.fcp"] = {value: startTimestamp};
+              this._measurements['fcp'] = { value: entry.startTime };
+              this._measurements['mark.fcp'] = { value: startTimestamp };
             }
 
             break;
@@ -212,7 +212,7 @@ export class MetricsInstrumentation {
     }
   }
 
-/** Starts tracking the First Input Delay on the current page. */
+  /** Starts tracking the First Input Delay on the current page. */
   private _trackFID(): void {
     // Based on reference implementation from https://web.dev/fid/#measure-fid-in-javascript.
     // Use a try/catch instead of feature detecting `first-input`
@@ -233,28 +233,28 @@ export class MetricsInstrumentation {
       );
 
       const updateFID = (entry: PerformanceEventTiming, po: PerformanceObserver): void => {
-      // Only report FID if the page wasn't hidden prior to
-      // the entry being dispatched. This typically happens when a
-      // page is loaded in a background tab.
-      if (entry.startTime < firstHiddenTime) {
-        const fidValue = entry.processingStart - entry.startTime;
+        // Only report FID if the page wasn't hidden prior to
+        // the entry being dispatched. This typically happens when a
+        // page is loaded in a background tab.
+        if (entry.startTime < firstHiddenTime) {
+          const fidValue = entry.processingStart - entry.startTime;
 
-        logger.log('[Measurements] Adding FID (First Input Delay)');
+          logger.log('[Measurements] Adding FID (First Input Delay)');
 
-        // Report the FID value to an analytics endpoint.
-        this._measurements['fid'] = { value: fidValue };
+          // Report the FID value to an analytics endpoint.
+          this._measurements['fid'] = { value: fidValue };
 
-        const timeOrigin = msToSec(performance.timeOrigin);
-        this._measurements['mark.fid_start'] = { value: timeOrigin + entry.startTime };
+          const timeOrigin = msToSec(performance.timeOrigin);
+          this._measurements['mark.fid_start'] = { value: timeOrigin + entry.startTime };
 
-        // Disconnect the observer.
-        po.disconnect();
-      }
-      }
+          // Disconnect the observer.
+          po.disconnect();
+        }
+      };
 
       // Create a PerformanceObserver that calls `updateFID` for each entry.
       const po = new PerformanceObserver(entryList => {
-        entryList.getEntries().forEach((entry) => updateFID(entry as PerformanceEventTiming, po));
+        entryList.getEntries().forEach(entry => updateFID(entry as PerformanceEventTiming, po));
       });
 
       // Observe entries of type `largest-contentful-paint`, including buffered entries,
