@@ -49,11 +49,6 @@ export class MetricsInstrumentation {
       if (this._lcp) {
         // Set the last observed LCP score.
         transaction.setData('_sentry_web_vitals', { LCP: this._lcp });
-
-        if (typeof this._lcp.value === 'number') {
-          console.log('captured lcp');
-          this._measurements["lcp"] = {value: Number(this._lcp.value)};
-        }
       }
     }
 
@@ -182,6 +177,9 @@ export class MetricsInstrumentation {
             ...(entry.size && { elementSize: entry.size }),
             value: entry.startTime,
           };
+
+          console.log('captured lcp');
+          this._measurements['lcp'] = {value: entry.startTime};
         }
       };
 
