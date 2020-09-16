@@ -97,14 +97,14 @@ export class MetricsInstrumentation {
             // capture web vitals
 
             if (entry.name === "first-paint") {
+              logger.log('[Measurements] Adding FP (First Paint)');
               this._measurements["fp"] = {value: entry.startTime};
             }
 
             if (entry.name === "first-contentful-paint") {
+              logger.log('[Measurements] Adding FCP (First Contentful Paint)');
               this._measurements["fcp"] = {value: entry.startTime};
             }
-
-            console.log('captured paints', this._measurements);
 
             break;
           }
@@ -178,7 +178,7 @@ export class MetricsInstrumentation {
             value: entry.startTime,
           };
 
-          console.log('captured lcp');
+          logger.log('[Measurements] Adding LCP (Largest Contentful Paint)');
           this._measurements['lcp'] = {value: entry.startTime};
         }
       };
@@ -233,7 +233,7 @@ export class MetricsInstrumentation {
       if (entry.startTime < firstHiddenTime) {
         const fidValue = entry.processingStart - entry.startTime;
 
-        console.log('captured fid');
+        logger.log('[Measurements] Adding FID (First Input Delay)');
 
         // Report the FID value to an analytics endpoint.
         this._measurements['fid'] = {value: fidValue};

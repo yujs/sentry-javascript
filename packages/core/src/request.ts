@@ -66,7 +66,6 @@ export function eventToSentryRequest(event: Event, api: API): SentryRequest {
     //
     // const envelope = `${envelopeHeaders}\n${itemHeaders}\n${req.body}\n`;
     const envelope = `${envelopeHeaders}\n${itemHeaders}\n${req.body}`;
-    console.log('sending envelope :D')
     req.body = envelope;
   }
 

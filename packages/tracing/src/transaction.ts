@@ -97,14 +97,12 @@ export class Transaction extends SpanClass {
       }).endTimestamp;
     }
 
-    console.log('hardcoding measurements 4');
-
     const extra: Partial<Event> = {};
 
     const hasMeasurements = Object.keys(this._measurements).length > 0;
 
     if (hasMeasurements) {
-      console.log('adding measurements', this._measurements);
+      logger.log('[Measurements] Adding measurements to transaction', JSON.stringify(this._measurements, undefined, 2));
       extra.measurements = this._measurements;
     }
 
