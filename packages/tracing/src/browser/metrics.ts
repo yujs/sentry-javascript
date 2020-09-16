@@ -98,12 +98,14 @@ export class MetricsInstrumentation {
 
             if (entry.name === "first-paint") {
               logger.log('[Measurements] Adding FP (First Paint)');
-              this._measurements["fp"] = {value: entry.startTime};
+              this._measurements["fp"] = { value: entry.startTime };
+              this._measurements["mark.fp"] = {value: startTimestamp};
             }
 
             if (entry.name === "first-contentful-paint") {
               logger.log('[Measurements] Adding FCP (First Contentful Paint)');
-              this._measurements["fcp"] = {value: entry.startTime};
+              this._measurements["fcp"] = { value: entry.startTime };
+              this._measurements["mark.fcp"] = {value: startTimestamp};
             }
 
             break;
@@ -179,7 +181,11 @@ export class MetricsInstrumentation {
           };
 
           logger.log('[Measurements] Adding LCP (Largest Contentful Paint)');
-          this._measurements['lcp'] = {value: entry.startTime};
+
+          this._measurements['lcp'] = { value: entry.startTime };
+
+          const timeOrigin = msToSec(performance.timeOrigin);
+          this._measurements['mark.lcp'] = { value: timeOrigin + entry.startTime };
         }
       };
 
@@ -236,7 +242,10 @@ export class MetricsInstrumentation {
         logger.log('[Measurements] Adding FID (First Input Delay)');
 
         // Report the FID value to an analytics endpoint.
-        this._measurements['fid'] = {value: fidValue};
+        this._measurements['fid'] = { value: fidValue };
+
+        const timeOrigin = msToSec(performance.timeOrigin);
+        this._measurements['mark.fid_start'] = { value: timeOrigin + entry.startTime };
 
         // Disconnect the observer.
         po.disconnect();
