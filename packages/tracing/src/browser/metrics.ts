@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SpanContext } from '@sentry/types';
+import { Measurements, SpanContext } from '@sentry/types';
 import { getGlobalObject, logger } from '@sentry/utils';
 
 import { Span } from '../span';
@@ -12,6 +12,7 @@ const global = getGlobalObject<Window>();
 /** Class tracking metrics  */
 export class MetricsInstrumentation {
   private _lcp: Record<string, any> = {};
+  private _measurements: Measurements = {};
 
   private _performanceCursor: number = 0;
 
@@ -41,6 +42,11 @@ export class MetricsInstrumentation {
       if (this._lcp) {
         // Set the last observed LCP score.
         transaction.setData('_sentry_web_vitals', { LCP: this._lcp });
+
+        if (typeof this._lcp.value === 'number') {
+          console.log('captured lcp');
+          this._measurements["lcp"] = {value: Number(this._lcp.value)};
+        }
       }
     }
 
@@ -85,6 +91,19 @@ export class MetricsInstrumentation {
             if (tracingInitMarkStartTime === undefined && entry.name === 'sentry-tracing-init') {
               tracingInitMarkStartTime = startTimestamp;
             }
+
+            // capture web vitals
+
+            if (entry.name === "first-paint") {
+              this._measurements["fp"] = {value: entry.startTime};
+            }
+
+            if (entry.name === "first-contentful-paint") {
+              this._measurements["fcp"] = {value: entry.startTime};
+            }
+
+            console.log('captured paints', this._measurements);
+
             break;
           }
           case 'resource': {
@@ -111,6 +130,8 @@ export class MetricsInstrumentation {
     }
 
     this._performanceCursor = Math.max(performance.getEntries().length - 1, 0);
+
+    transaction.setMeasurements(this._measurements);
   }
 
   private _forceLCP: () => void = () => {
