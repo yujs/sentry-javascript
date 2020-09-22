@@ -3,7 +3,34 @@
 ## Unreleased
 
 - "You miss 100 percent of the chances you don't take. — Wayne Gretzky" — Michael Scott
+- [ember] feat: Add more render instrumentation (#2902)
+
+## 5.24.2
+
+- [utils] fix: Check that performance is available before calling it in RN (#2924)
+
+## 5.24.1
+
+- [types] fix: Remove Location type to avoid dom lib dependency (#2922)
+
+## 5.24.0
+
+- [angular] fix: Make sure that message exist before returning it in angular error handler (#2903)
+- [integrations] feat: Add referrer to data collected by UserAgent integration (#2912)
+- [core] fix: Make sure that body is not exposed in the breadcrumb by default (#2911)
+- [core] feat: Give access to XHR requests body in breadcrumb hint (#2904)
+- [core] fix: Add a wrapper around performance for React Native (#2915)
+- [integrations] fix: Make Vue tracing options optional (#2897)
+- [integrations] ref: Remove unnecessary eventID check in offline integration (#2890)
+- [tracing] feat: Add hook for trace sampling function to SDK options (#2820)
+
+## 5.23.0
+
+- [serverless] feat: Introduce `@sentry/serverless` with `AWSLambda` support (#2886)
 - [ember] feat: Add performance instrumentation for routes (#2784)
+- [node] ref: Remove query strings from transaction and span names (#2857)
+- [angular] ref: Strip query and fragment from Angular tracing URLs (#2874)
+- [tracing] ref: Simplify `shouldCreateSpanForRequest` (#2867)
 
 ## 5.22.3
 

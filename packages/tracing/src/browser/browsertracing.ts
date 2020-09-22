@@ -4,8 +4,8 @@ import { logger } from '@sentry/utils';
 
 import { startIdleTransaction } from '../hubextensions';
 import { DEFAULT_IDLE_TIMEOUT, IdleTransaction } from '../idletransaction';
-import { Span } from '../span';
 import { SpanStatus } from '../spanstatus';
+import { extractTraceparentData, secToMs } from '../utils';
 import { registerBackgroundTabDetection } from './backgroundtab';
 import { MetricsInstrumentation } from './metrics';
 import {
@@ -14,7 +14,6 @@ import {
   RequestInstrumentationOptions,
 } from './request';
 import { defaultBeforeNavigate, defaultRoutingInstrumentation } from './router';
-import { secToMs } from './utils';
 
 export const DEFAULT_MAX_TRANSACTION_DURATION_SECONDS = 600;
 
@@ -80,6 +79,17 @@ export interface BrowserTracingOptions extends RequestInstrumentationOptions {
   ): void;
 }
 
+const DEFAULT_BROWSER_TRACING_OPTIONS = {
+  beforeNavigate: defaultBeforeNavigate,
+  idleTimeout: DEFAULT_IDLE_TIMEOUT,
+  markBackgroundTransactions: true,
+  maxTransactionDuration: DEFAULT_MAX_TRANSACTION_DURATION_SECONDS,
+  routingInstrumentation: defaultRoutingInstrumentation,
+  startTransactionOnLocationChange: true,
+  startTransactionOnPageLoad: true,
+  ...defaultRequestInstrumentionOptions,
+};
+
 /**
  * The Browser Tracing integration automatically instruments browser pageload/navigation
  * actions as transactions, and captures requests, metrics and errors as spans.
@@ -94,16 +104,7 @@ export class BrowserTracing implements Integration {
   public static id: string = 'BrowserTracing';
 
   /** Browser Tracing integration options */
-  public options: BrowserTracingOptions = {
-    beforeNavigate: defaultBeforeNavigate,
-    idleTimeout: DEFAULT_IDLE_TIMEOUT,
-    markBackgroundTransactions: true,
-    maxTransactionDuration: DEFAULT_MAX_TRANSACTION_DURATION_SECONDS,
-    routingInstrumentation: defaultRoutingInstrumentation,
-    startTransactionOnLocationChange: true,
-    startTransactionOnPageLoad: true,
-    ...defaultRequestInstrumentionOptions,
-  };
+  public options: BrowserTracingOptions;
 
   /**
    * @inheritDoc
@@ -131,7 +132,7 @@ export class BrowserTracing implements Integration {
     }
 
     this.options = {
-      ...this.options,
+      ...DEFAULT_BROWSER_TRACING_OPTIONS,
       ..._options,
       tracingOrigins,
     };
@@ -180,7 +181,7 @@ export class BrowserTracing implements Integration {
   /** Create routing idle transaction. */
   private _createRouteTransaction(context: TransactionContext): TransactionType | undefined {
     if (!this._getCurrentHub) {
-      logger.warn(`[Tracing] Did not create ${context.op} idleTransaction due to invalid _getCurrentHub`);
+      logger.warn(`[Tracing] Did not create ${context.op} transaction because _getCurrentHub is invalid.`);
       return undefined;
     }
 
@@ -213,21 +214,16 @@ export class BrowserTracing implements Integration {
 
 /**
  * Gets transaction context from a sentry-trace meta.
+ *
+ * @returns Transaction context data from the header or undefined if there's no header or the header is malformed
  */
-function getHeaderContext(): Partial<TransactionContext> {
+function getHeaderContext(): Partial<TransactionContext> | undefined {
   const header = getMetaContent('sentry-trace');
   if (header) {
-    const span = Span.fromTraceparent(header);
-    if (span) {
-      return {
-        parentSpanId: span.parentSpanId,
-        sampled: span.sampled,
-        traceId: span.traceId,
-      };
-    }
+    return extractTraceparentData(header);
   }
 
-  return {};
+  return undefined;
 }
 
 /** Returns the value of a meta tag */

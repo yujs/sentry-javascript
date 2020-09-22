@@ -51,6 +51,13 @@ export class Offline implements Integration {
     this.offlineEventStore = localForage.createInstance({
       name: 'sentry/offlineEventStore',
     });
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public setupOnce(addGlobalEventProcessor: (callback: EventProcessor) => void, getCurrentHub: () => Hub): void {
+    this.hub = getCurrentHub();
 
     if ('addEventListener' in this.global) {
       this.global.addEventListener('online', () => {
@@ -59,13 +66,6 @@ export class Offline implements Integration {
         });
       });
     }
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public setupOnce(addGlobalEventProcessor: (callback: EventProcessor) => void, getCurrentHub: () => Hub): void {
-    this.hub = getCurrentHub();
 
     addGlobalEventProcessor((event: Event) => {
       if (this.hub && this.hub.getIntegration(Offline)) {
@@ -149,13 +149,11 @@ export class Offline implements Integration {
   private async _sendEvents(): Promise<void> {
     return this.offlineEventStore.iterate<Event, void>((event: Event, cacheKey: string, _index: number): void => {
       if (this.hub) {
-        const newEventId = this.hub.captureEvent(event);
+        this.hub.captureEvent(event);
 
-        if (newEventId) {
-          this._purgeEvent(cacheKey).catch((_error): void => {
-            logger.warn('could not purge event from cache');
-          });
-        }
+        this._purgeEvent(cacheKey).catch((_error): void => {
+          logger.warn('could not purge event from cache');
+        });
       } else {
         logger.warn('no hub found - could not send cached event');
       }
