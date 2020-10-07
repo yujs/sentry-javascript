@@ -2,7 +2,8 @@
 
 /**
  * All interfaces and types sourced from TypeScript's lib.dom.d.ts. Provided here in order to allow dom types to be used
- * in packages which are used in both node and browser apps (like @sentry/tracing).
+ * in packages like @sentry/tracing, which are themselves used in both @sentry/node and @sentry/browser (and their
+ * derivatives).
  */
 
 /** -------------------- */

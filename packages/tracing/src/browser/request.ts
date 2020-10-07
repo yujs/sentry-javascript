@@ -51,9 +51,7 @@ export interface FetchData {
     __span?: string;
   };
 
-  // TODO Should this be unknown instead? If we vendor types, make it a Response
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  response?: any;
+  response?: Response;
 
   startTimestamp: number;
   endTimestamp?: number;
