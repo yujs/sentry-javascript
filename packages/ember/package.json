@@ -23,7 +23,7 @@
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint . --cache --cache-location '../../eslintcache/'",
     "start": "ember serve",
-    "test": "npm-run-all lint:* test:*",
+    "test": "echo $(date +'%I:%M:%S %p') && npm-run-all lint:* test:* && echo $(date +'%I:%M:%S %p')",
     "test:ember": "ember test",
     "test:ember-compatibility": "ember try:each",
     "prepublishOnly": "ember ts:precompile",
